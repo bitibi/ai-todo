@@ -1,0 +1,66 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <!-- Logo / brand -->
+    <div class="auth-card__logo">
+      <div class="auth-card__icon">✓</div>
+      <h1 class="auth-card__brand">TodoAI</h1>
+    </div>
+
+    <h2 class="auth-card__title">Welcome back</h2>
+    <p class="auth-card__subtitle">Sign in to your account</p>
+
+    @if (error()) {
+      <div class="alert alert-danger py-2 px-3 mb-3" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary w-100 auth-btn"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          Signing in...
+        } @else {
+          Sign in
+        }
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      Don't have an account?
+      <a routerLink="/register" class="auth-card__link">Register</a>
+    </p>
+  </div>
+</div>

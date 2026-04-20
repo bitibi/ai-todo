@@ -1,0 +1,43 @@
+<!-- Floating mic button -->
+<button
+  class="mic-fab"
+  [class.recording]="isRecording()"
+  [class.processing]="isProcessing()"
+  (click)="toggleRecording()"
+  [disabled]="isProcessing()"
+  [attr.aria-label]="isRecording() ? 'Stop recording' : 'Start voice input'"
+>
+  @if (isProcessing()) {
+    <span class="spinner"></span>
+  } @else if (isRecording()) {
+    <span class="mic-icon">&#9209;</span>
+  } @else {
+    <span class="mic-icon">&#127908;</span>
+  }
+</button>
+
+<!-- Recording indicator -->
+@if (isRecording()) {
+  <div class="recording-badge">
+    <span class="rec-dot"></span> Recording&hellip; tap button to stop
+  </div>
+}
+
+<!-- Transcript popup -->
+@if (transcript() || error()) {
+  <div class="transcript-overlay" (click)="closePopup()">
+    <div class="transcript-card" (click)="$event.stopPropagation()">
+      <div class="transcript-header">
+        <span>{{ error() ? 'Error' : 'Transcript' }}</span>
+        <button class="close-btn" (click)="closePopup()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="transcript-body">
+        @if (error()) {
+          <p class="error-text">{{ error() }}</p>
+        } @else {
+          <p class="transcript-text">{{ transcript() }}</p>
+        }
+      </div>
+    </div>
+  </div>
+}

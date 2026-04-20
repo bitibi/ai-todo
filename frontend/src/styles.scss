@@ -1,0 +1,79 @@
+// ── CSS custom properties ──────────────────────────────────────────────────────
+:root {
+  --bg: #f4f3f8;
+  --accent: #6c5ce7;
+  --urgent: #e63946;
+  --high: #f0932b;
+  --medium: #6c5ce7;
+  --low: #6c757d;
+  --card-radius: 12px;
+  --shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(108, 92, 231, 0.1);
+}
+
+// ── Base reset & typography ────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: #2d3436;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+// ── Bootstrap overrides ────────────────────────────────────────────────────────
+
+// Make Bootstrap primary use our accent colour
+.btn-primary {
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-bg: #5a49d6;
+  --bs-btn-hover-border-color: #5a49d6;
+  --bs-btn-active-bg: #4c3dba;
+  --bs-btn-focus-shadow-rgb: 108, 92, 231;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.12);
+}
+
+// ── Scrollbar (Webkit) ─────────────────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8c4e8;
+  border-radius: 3px;
+
+  &:hover {
+    background: #a29bfe;
+  }
+}
+
+// ── Utility helpers ────────────────────────────────────────────────────────────
+.text-accent {
+  color: var(--accent) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent) !important;
+}

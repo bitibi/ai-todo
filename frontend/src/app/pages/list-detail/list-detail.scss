@@ -1,0 +1,466 @@
+// ── Loading / error states ────────────────────────────────────────────────────
+
+.page-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+// ── List header ───────────────────────────────────────────────────────────────
+
+.list-header {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: #fff;
+  padding: 16px 0 20px;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__back {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  }
+
+  &__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  &__meta {
+    font-size: 0.82rem;
+    opacity: 0.8;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  &__action {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    &--danger:hover {
+      background: rgba(230, 57, 70, 0.55);
+    }
+  }
+}
+
+// ── List rename / delete modals ───────────────────────────────────────────────
+
+.ld-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 24px;
+}
+
+.ld-modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+
+    &--danger {
+      background: linear-gradient(135deg, #e63946, #f1556c);
+    }
+  }
+
+  &__close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__body {
+    padding: 24px 20px 20px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+}
+
+.ld-icon-input {
+  font-size: 1.4rem;
+  text-align: center;
+  max-width: 80px;
+}
+
+.ld-save-btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  min-width: 90px;
+
+  &:hover:not(:disabled) {
+    background: #5a49d6;
+    border-color: #5a49d6;
+  }
+}
+
+// ── Main content ──────────────────────────────────────────────────────────────
+
+.list-main {
+  padding-top: 20px;
+  padding-bottom: 60px;
+}
+
+// ── Filter chips ──────────────────────────────────────────────────────────────
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filter-chip {
+  border: none;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #e9e8f5;
+  color: #555;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: #d8d5f0;
+  }
+
+  &--all.filter-chip--active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  &--urgent {
+    &.filter-chip--active {
+      background: var(--urgent);
+      color: #fff;
+    }
+    &:hover:not(.filter-chip--active) {
+      background: rgba(230, 57, 70, 0.12);
+      color: var(--urgent);
+    }
+  }
+
+  &--high {
+    &.filter-chip--active {
+      background: var(--high);
+      color: #fff;
+    }
+    &:hover:not(.filter-chip--active) {
+      background: rgba(240, 147, 43, 0.12);
+      color: var(--high);
+    }
+  }
+
+  &--medium {
+    &.filter-chip--active {
+      background: var(--accent);
+      color: #fff;
+    }
+  }
+
+  &--low {
+    &.filter-chip--active {
+      background: #6c757d;
+      color: #fff;
+    }
+  }
+}
+
+// ── Section cards ─────────────────────────────────────────────────────────────
+
+.section-card {
+  background: #fff;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+
+  &.section-color--orange  { border-left-color: #f0932b; }
+  &.section-color--blue    { border-left-color: #0984e3; }
+  &.section-color--purple  { border-left-color: #6c5ce7; }
+  &.section-color--pink    { border-left-color: #fd79a8; }
+  &.section-color--green   { border-left-color: #00b894; }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafafa;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #f4f3f8;
+    }
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2d3436;
+    flex: 1;
+  }
+
+  &__count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #aaa;
+    background: #eee;
+    border-radius: 10px;
+    padding: 1px 7px;
+  }
+
+  &__chevron {
+    color: #bbb;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    padding: 8px 12px 12px;
+  }
+}
+
+.section-empty {
+  font-size: 0.82rem;
+  color: #aaa;
+  padding: 8px 4px;
+  margin: 0;
+  font-style: italic;
+}
+
+// ── Drag preview ──────────────────────────────────────────────────────────────
+
+.cdk-drag-preview {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.25;
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// ── Unsectioned tasks ─────────────────────────────────────────────────────────
+
+.unsectioned-tasks {
+  margin-bottom: 16px;
+
+  &__heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+}
+
+// ── Add task form ─────────────────────────────────────────────────────────────
+
+.add-task-form {
+  background: #f8f7ff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1.5px dashed rgba(108, 92, 231, 0.3);
+
+  .form-control,
+  .form-select {
+    border-color: #e0dff5;
+    font-size: 0.85rem;
+
+    &:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.1);
+    }
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    font-size: 0.85rem;
+
+    &:hover:not(:disabled) {
+      background: #5a49d6;
+      border-color: #5a49d6;
+    }
+  }
+}
+
+.add-task-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.add-task-main-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px dashed rgba(108, 92, 231, 0.35);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 11px 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 20px;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #f8f7ff;
+    border-color: var(--accent);
+  }
+}
+
+// ── Completed section ─────────────────────────────────────────────────────────
+
+.completed-section {
+  margin-top: 24px;
+  border-top: 1.5px solid #e9e8f5;
+  padding-top: 12px;
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.15s;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      color: #555;
+    }
+  }
+
+  &__body {
+    margin-top: 10px;
+  }
+}

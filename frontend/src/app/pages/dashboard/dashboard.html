@@ -1,0 +1,182 @@
+<!-- Top nav / header -->
+<header class="dash-header">
+  <div class="dash-header__inner">
+    <div class="dash-header__brand">
+      <div class="dash-header__logo">✓</div>
+      <span class="dash-header__name">TodoAI</span>
+    </div>
+
+    <div class="dash-header__stats">
+      <div class="stat-chip">
+        <span class="stat-chip__value">{{ totalTaskCount() }}</span>
+        <span class="stat-chip__label">tasks</span>
+      </div>
+      @if (totalEstimatedHours() > 0) {
+        <div class="stat-chip">
+          <span class="stat-chip__value">{{ totalEstimatedHours() }}h</span>
+          <span class="stat-chip__label">estimated</span>
+        </div>
+      }
+    </div>
+
+    <div class="dash-header__user">
+      @if (currentUser$ | async; as user) {
+        <span class="dash-header__user-name">{{ user.full_name || user.email }}</span>
+      }
+      <button class="btn btn-sm dash-header__logout" (click)="logout()">
+        Sign out
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero banner -->
+<div class="dash-hero">
+  <div class="container-fluid px-4">
+    <h2 class="dash-hero__title">Good day! Here's your overview.</h2>
+    <div class="dash-hero__meta">
+      <span>{{ totalTaskCount() }} active tasks</span>
+      @if (totalEstimatedHours() > 0) {
+        <span class="dash-hero__dot">·</span>
+        <span>{{ totalEstimatedHours() }}h estimated work</span>
+      }
+    </div>
+  </div>
+</div>
+
+<main class="dash-main container-fluid px-4">
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="dash-loading">
+      <div class="spinner-border text-primary" role="status"></div>
+      <span>Loading your lists…</span>
+    </div>
+  }
+
+  <!-- Urgent panel -->
+  @if (!loading() && urgentTasks().length > 0) {
+    <section class="urgent-panel">
+      <div class="urgent-panel__header" (click)="toggleUrgentPanel()" role="button" tabindex="0"
+        (keydown.enter)="toggleUrgentPanel()" [attr.aria-expanded]="urgentExpanded()">
+        <div class="urgent-panel__title">
+          <span class="urgent-dot"></span>
+          <strong>Urgent Tasks</strong>
+          <span class="badge urgent-badge">{{ urgentTasks().length }}</span>
+        </div>
+        <svg class="urgent-panel__chevron" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5"
+          [style.transform]="urgentExpanded() ? 'rotate(180deg)' : 'rotate(0deg)'">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+
+      @if (urgentExpanded()) {
+        <div class="urgent-panel__body">
+          @for (task of urgentTasks(); track trackByTaskId($index, task)) {
+            <app-task-item
+              [task]="task"
+              [showCheckbox]="true"
+              (completed)="onTaskCompleted($event)"
+              (uncompleted)="onTaskUncompleted($event)"
+              (deleted)="onTaskDeleted($event)"
+              (updated)="onTaskUpdated($event)"
+            />
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Category grid -->
+  @if (!loading()) {
+    <section class="category-section">
+      <div class="category-section__heading-row">
+        <h3 class="category-section__heading">Your Lists</h3>
+        <button class="btn btn-sm new-list-btn" (click)="openNewListModal()">+ New List</button>
+      </div>
+
+      @if (lists().length === 0) {
+        <div class="empty-state">
+          <p>No lists yet. Create your first list to get started!</p>
+        </div>
+      } @else {
+        <div class="category-grid">
+          @for (list of lists(); track trackByListId($index, list)) {
+            <div
+              class="category-tile"
+              [style.--tile-bg]="list.icon_bg"
+              (click)="navigateToList(list)"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="navigateToList(list)"
+            >
+              <div class="category-tile__icon">{{ list.icon }}</div>
+              <div class="category-tile__body">
+                <span class="category-tile__name">{{ list.name }}</span>
+                <span class="category-tile__count">
+                  {{ activeTaskCount(list) }} task{{ activeTaskCount(list) !== 1 ? 's' : '' }}
+                </span>
+              </div>
+              @if (list.is_urgent) {
+                <span class="category-tile__urgent-dot" title="Contains urgent tasks"></span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+
+</main>
+
+<!-- New List Modal -->
+@if (showNewListModal()) {
+  <div class="nl-overlay" (click)="closeNewListModal()">
+    <div class="nl-modal" (click)="$event.stopPropagation()">
+      <div class="nl-modal__header">
+        <span>New List</span>
+        <button class="nl-modal__close" (click)="closeNewListModal()" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="nl-modal__body">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="newListName">List name</label>
+          <input
+            id="newListName"
+            type="text"
+            class="form-control"
+            placeholder="e.g. Groceries, Work, Reading…"
+            [(ngModel)]="newListName"
+            (keydown.enter)="createList()"
+            autofocus
+          />
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold" for="newListIcon">Icon (emoji)</label>
+          <input
+            id="newListIcon"
+            type="text"
+            class="form-control nl-icon-input"
+            [(ngModel)]="newListIcon"
+            maxlength="4"
+          />
+        </div>
+        <div class="nl-modal__actions">
+          <button class="btn btn-outline-secondary" (click)="closeNewListModal()" [disabled]="creatingList()">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary nl-create-btn"
+            (click)="createList()"
+            [disabled]="!newListName.trim() || creatingList()"
+          >
+            @if (creatingList()) {
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            }
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
