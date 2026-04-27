@@ -72,3 +72,8 @@ coverage/
 /*.png
 /*.jpg
 /*.jpeg
+/*.pdf
+/*.html
+
+# ---------- Claude Code local settings ----------
+.claude/

@@ -15,6 +15,7 @@ class TaskBase(BaseModel):
     details: Optional[str] = None
     sub_text: Optional[str] = None
     position: Optional[int] = 0
+    due_date: Optional[datetime] = None
 
 
 class TaskCreate(TaskBase):
@@ -40,6 +41,7 @@ class TaskUpdate(BaseModel):
     sub_text: Optional[str] = None
     position: Optional[int] = None
     is_completed: Optional[bool] = None
+    due_date: Optional[datetime] = None
 
 
 class TaskResponse(BaseModel):
@@ -57,6 +59,7 @@ class TaskResponse(BaseModel):
     sub_text: Optional[str] = None
     position: int = 0
     is_completed: bool = False
+    due_date: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
